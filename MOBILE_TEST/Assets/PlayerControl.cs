@@ -18,7 +18,7 @@ public class PlayerControl : NetworkBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        inputControl.player = this;
     }
 
     public override void OnStartLocalPlayer()
@@ -38,7 +38,6 @@ public class PlayerControl : NetworkBehaviour
     {
         if (isLocalPlayer)
         {
-
             transform.position += (transform.forward * speed * speedModifier) * Time.deltaTime;
             speed = Mathf.Clamp(Vector2.Distance(inputControl.joystick.position, inputControl.joystickOrigin) / 40, 0, 1);
 
@@ -65,8 +64,16 @@ public class PlayerControl : NetworkBehaviour
 
             //Debug.Log(Vector2.Distance(inputControl.joystick.position, inputControl.joystickOrigin));
 
-            GetComponent<Animator>().SetBool("isRunning", speed > 0.1f);
+            
         }
+        GetComponent<Animator>().SetBool("isRunning", speed > 0.1f);
 
     }
+
+    public void Dive()
+    {
+        GetComponent<Animator>().SetTrigger("dive");
+        Debug.Log(true);
+    }
+
 }

@@ -11,6 +11,8 @@ public class GRC : MonoBehaviour
 
     public RectTransform joystick;
 
+    public PlayerControl player;
+
     // The location the joystick started in. 
     public Vector2 joystickOrigin;
 
@@ -55,5 +57,11 @@ public class GRC : MonoBehaviour
         {
             joystick.position = joystickOrigin;
         }
+    }
+
+
+    public void DiveInput()
+    {
+        player.Dive();
     }
 }
