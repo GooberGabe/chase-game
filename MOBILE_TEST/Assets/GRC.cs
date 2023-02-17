@@ -30,7 +30,8 @@ public class GRC : MonoBehaviour
         if (Input.touchCount > 0)
         {
             m_PointerEventData = new PointerEventData(m_EventSystem);
-            m_PointerEventData.position = Input.mousePosition;
+            m_PointerEventData.position = Input.touches[0].position;
+
 
             List<RaycastResult> results = new List<RaycastResult>();
 
@@ -41,7 +42,7 @@ public class GRC : MonoBehaviour
             {
                 if (result.gameObject.name == "Joystick")
                 {
-                    joystick.position = Input.mousePosition;
+                    joystick.position = m_PointerEventData.position;
                     jsTouch = true;
 
                 }
@@ -62,6 +63,6 @@ public class GRC : MonoBehaviour
 
     public void DiveInput()
     {
-        player.Dive();
+        player.DiveTrigger();
     }
 }

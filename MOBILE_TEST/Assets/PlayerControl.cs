@@ -8,17 +8,20 @@ using Mirror;
 public class PlayerControl : NetworkBehaviour
 {
     GRC inputControl;
-
+    Rigidbody rb;
     public Transform swivelTarget;
 
     public float speed;
-
     public float speedModifier = 12;
+    //public float gravity = 1;
+
+    public bool shouldRun = false;
 
     // Start is called before the first frame update
     void Start()
     {
         inputControl.player = this;
+        rb = GetComponent<Rigidbody>();
     }
 
     public override void OnStartLocalPlayer()
@@ -38,8 +41,7 @@ public class PlayerControl : NetworkBehaviour
     {
         if (isLocalPlayer)
         {
-            transform.position += (transform.forward * speed * speedModifier) * Time.deltaTime;
-            speed = Mathf.Clamp(Vector2.Distance(inputControl.joystick.position, inputControl.joystickOrigin) / 40, 0, 1);
+            speed = Mathf.Clamp(Vector2.Distance(inputControl.joystick.position, inputControl.joystickOrigin) / 50, 0, 1);
 
             if (Input.GetKey(KeyCode.W))
             {
@@ -50,6 +52,13 @@ public class PlayerControl : NetworkBehaviour
                 speed = -1;
             }
 
+            if (shouldRun)
+            {
+                transform.position += ((transform.forward * speed * speedModifier) * Time.deltaTime);
+            }
+
+            
+
             Vector2 angle = ((Vector2)inputControl.joystick.position - inputControl.joystickOrigin).normalized;
             float turnAngle = Mathf.Atan2(angle.x, angle.y) * Mathf.Rad2Deg;
 
@@ -59,21 +68,29 @@ public class PlayerControl : NetworkBehaviour
                 //float adjustedTurnAngle = (turnAngle >= 180 ? 360 - turnAngle : turnAngle);
                 //float adjustedRotation = (Mathf.Pow(Mathf.Abs(turnAngle), 1.5f) / 3000) * (turnAngle < 0 ? -1 : 1);
                 //Debug.Log(adjustedRotation);
-                transform.Rotate(Vector3.up, turnAngle / 80);
+                transform.Rotate(Vector3.up, ((2 * Mathf.Pow(turnAngle,3)) /  (Mathf.Pow(turnAngle, 2) + 9000)) / 80);
             }
 
             //Debug.Log(Vector2.Distance(inputControl.joystick.position, inputControl.joystickOrigin));
 
+            //characterController.SimpleMove(Vector3.down * gravity * Time.deltaTime);
             
         }
         GetComponent<Animator>().SetBool("isRunning", speed > 0.1f);
 
     }
 
-    public void Dive()
+    public void DiveForce()
     {
-        GetComponent<Animator>().SetTrigger("dive");
-        Debug.Log(true);
+        rb.AddForce(transform.forward * 1600);
+        Debug.Log("HI");
+    }
+    public void DiveTrigger()
+    {
+        if (shouldRun)
+        {
+            GetComponent<Animator>().SetTrigger("dive");
+        }
     }
 
 }
